@@ -1,18 +1,22 @@
 import socket
+import threading
 
-def handle_client(conn, addr):
-    while True:
-        data = conn.recv(1024)
-        conn.sendall(b"Received")
+PORT = 5678
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind((socket.gethostname(), 5678))
-    s.listen()
-    conn, addr = s.accept()
-    handle_client(conn, addr)
-
+def client_handler(conn):
     while True:
         data = conn.recv(1024)
         if not data:
             break
-        conn.sendall("Yo bro\n")
+        print(data.decode())
+
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.bind(("192.168.1.34", PORT))
+    s.listen()
+    print(f"Listening on port {PORT}")
+
+    while True:
+        conn, addr = s.accept()
+        print(f"{addr} connected")
+        handle_client = threading.Thread(target=client_handler, args=(conn, ))
+        handle_client.start()
