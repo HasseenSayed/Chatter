@@ -1,14 +1,31 @@
 import socket
-from time import sleep
+import threading
+import chatnet
 
 PORT = 5678
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.connect(("192.168.1.34", PORT))
+def receiver(s):
     while True:
-        msg = input("\n")
-        s.sendall(b"" + msg.encode())
         data = s.recv(1024)
         if not data:
             break
         print(data.decode())
+    s.close()
+
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    servers, clients = chatnet.discover()
+    print(servers)
+    s.connect((servers[0], PORT))
+    recv_handler = threading.Thread(target=receiver, args=(s, ))
+    recv_handler.start()
+    while True:
+        try:
+            msg = input(">>> ")
+            if msg.lower() == "/exit":
+                break
+            s.sendall(b"" + msg.encode())
+        except KeyboardInterrupt:
+            s.close()
+            break
+
+ 
