@@ -11,7 +11,7 @@ def client_handler(conn):
         print(data.decode())
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind(("192.168.1.34", PORT))
+    s.bind(("192.168.1.20", PORT))
     s.listen()
     print(f"Listening on port {PORT}")
 

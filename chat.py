@@ -4,7 +4,7 @@ from time import sleep
 PORT = 5678
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.connect(("192.168.1.34", PORT))
+    s.connect(("192.168.1.10", PORT))
     while True:
         msg = input("\n")
         s.sendall(b"" + msg.encode())
